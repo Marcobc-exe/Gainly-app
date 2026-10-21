@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Gainly",
+    "slug": "gainly",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icono-gainly.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gainly.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F5F4",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.gainly.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "backgroundColor": "#F5F5F4"
+        }
+      ]
+    ],
+    "scheme": "gainly",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
