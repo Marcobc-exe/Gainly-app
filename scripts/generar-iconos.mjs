@@ -45,6 +45,8 @@ const variantes = {
   ),
   // Pantalla de carga: solo el huevo sobre transparente.
   splash: svg(dibujo(COLORES), vista(92)),
+  // Pantalla de carga en modo oscuro (fondo #121211): huevo claro.
+  splashOscuro: svg(dibujo({ trazo: '#F2F1EE', pista: '#2A2A27', yema: '#8E8D88' }), vista(92)),
 };
 
 const salidas = [
@@ -55,6 +57,7 @@ const salidas = [
   ['android-icon-monochrome.png', variantes.monocromo, 432],
   ['favicon.png', variantes.favicon, 48],
   ['splash-icon.png', variantes.splash, 1024],
+  ['splash-icon-dark.png', variantes.splashOscuro, 1024],
 ];
 
 // Fuentes vectoriales, para poder editarlas o reutilizarlas.

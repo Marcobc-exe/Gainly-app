@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { CampoNumero, CampoTexto, Contador, Etiqueta, Opciones } from '@/components/ui';
 import { UMBRALES_POR_DEFECTO } from '@/lib/estadoDia';
 import { TIPO_ENTRENAMIENTO_POR_DEFECTO, type DatosCalculo } from '@/lib/objetivos';
-import { espacio, tipografia } from '@/theme/colors';
+import { espacio } from '@/theme/colors';
+import { useTema } from '@/theme/TemaProvider';
 import type { ActividadDiaria, Objetivo, Perfil, Sexo, TipoEntrenamiento } from '@/types';
 
 /** Estado editable del formulario (números como texto mientras se escriben). */
@@ -137,6 +138,7 @@ interface CampoProps {
 }
 
 export function CamposBasicos({ borrador, cambiar }: CampoProps) {
+  const { tipografia } = useTema();
   return (
     <View style={{ gap: espacio.lg }}>
       <CampoTexto

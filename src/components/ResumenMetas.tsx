@@ -2,9 +2,12 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Separador, Tarjeta } from '@/components/ui';
 import type { Desglose } from '@/lib/objetivos';
-import { colors, espacio, tipografia } from '@/theme/colors';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 
 export function ResumenMetas({ desglose }: { desglose: Desglose }) {
+  const { colors } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <Tarjeta style={{ gap: espacio.md }}>
       <View style={styles.fila}>
@@ -22,6 +25,8 @@ export function ResumenMetas({ desglose }: { desglose: Desglose }) {
 }
 
 function Meta({ titulo, valor, color }: { titulo: string; valor: number; color: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={{ flex: 1 }}>
       <View style={[styles.punto, { backgroundColor: color }]} />
@@ -32,6 +37,8 @@ function Meta({ titulo, valor, color }: { titulo: string; valor: number; color: 
 }
 
 function Linea({ texto, valor }: { texto: string; valor: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={styles.linea}>
       <Text style={tipografia.secundario}>{texto}</Text>
@@ -40,7 +47,8 @@ function Linea({ texto, valor }: { texto: string; valor: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   fila: { flexDirection: 'row', gap: espacio.lg },
   punto: { width: 10, height: 10, borderRadius: 5, marginBottom: espacio.sm },
   valor: { fontSize: 30, fontWeight: '700', color: colors.texto, letterSpacing: -0.5 },

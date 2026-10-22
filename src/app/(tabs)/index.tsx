@@ -10,10 +10,14 @@ import { Pantalla, Separador, Tarjeta } from '@/components/ui';
 import { estadoDelDia, sumarRegistros } from '@/lib/estadoDia';
 import { aFecha, claveFecha, formatoLargo, hoy } from '@/lib/fechas';
 import { useMetaDe, usePerfil, useRegistrosDe } from '@/store/useApp';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
-import { COLOR_ESTADO, TEXTO_ESTADO } from '@/theme/estados';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
+import { useColorEstado, TEXTO_ESTADO } from '@/theme/estados';
 
 export default function Hoy() {
+  const COLOR_ESTADO = useColorEstado();
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const [fecha, setFecha] = useState(hoy);
   const perfil = usePerfil();
   const registros = useRegistrosDe(fecha);
@@ -108,7 +112,8 @@ export default function Hoy() {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   navFecha: { flexDirection: 'row', alignItems: 'center', gap: espacio.md, marginTop: espacio.xs },
   anillos: { flexDirection: 'row', gap: espacio.sm },
   estado: {

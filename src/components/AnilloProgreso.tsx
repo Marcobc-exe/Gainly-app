@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
-import { colors } from '@/theme/colors';
+import { type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 
 interface Props {
   titulo: string;
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export function AnilloProgreso({ titulo, consumido, meta, color, tamano = 150, grosor = 14 }: Props) {
+  const { colors } = useTema();
+  const styles = useEstilos(crearEstilos);
   const radio = (tamano - grosor) / 2;
   const circunferencia = 2 * Math.PI * radio;
   const pct = meta > 0 ? consumido / meta : 0;
@@ -78,7 +81,8 @@ export function AnilloProgreso({ titulo, consumido, meta, color, tamano = 150, g
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   contenedor: { alignItems: 'center', flex: 1 },
   centro: { alignItems: 'center', justifyContent: 'center' },
   porcentaje: { fontSize: 28, fontWeight: '700', color: colors.texto, letterSpacing: -0.5 },

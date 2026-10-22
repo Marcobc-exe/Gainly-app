@@ -5,9 +5,18 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useApp, useHidratado, usePerfil } from '@/store/useApp';
-import { colors } from '@/theme/colors';
+import { TemaProvider, useTema } from '@/theme/TemaProvider';
 
 export default function RootLayout() {
+  return (
+    <TemaProvider>
+      <Contenido />
+    </TemaProvider>
+  );
+}
+
+function Contenido() {
+  const { colors, esOscuro } = useTema();
   const hidratado = useHidratado();
   const sesion = useApp((s) => s.sesion);
   const perfil = usePerfil();
@@ -23,7 +32,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="dark" />
+        <StatusBar style={esOscuro ? 'light' : 'dark'} />
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.fondo } }}>
           <Stack.Protected guard={!sesion}>
             <Stack.Screen name="login" />

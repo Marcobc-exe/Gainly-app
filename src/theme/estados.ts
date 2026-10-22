@@ -1,4 +1,5 @@
-import { colors } from '@/theme/colors';
+import { useTema } from '@/theme/TemaProvider';
+import type { Paleta } from '@/theme/colors';
 import type { EstadoDia } from '@/types';
 
 export const TEXTO_ESTADO: Record<EstadoDia, string> = {
@@ -8,9 +9,14 @@ export const TEXTO_ESTADO: Record<EstadoDia, string> = {
   vacio: 'Sin registros',
 };
 
-export const COLOR_ESTADO: Record<EstadoDia, string> = {
+export const crearColorEstado = (colors: Paleta): Record<EstadoDia, string> => ({
   logrado: colors.logrado,
   casi: colors.casi,
   no_logrado: colors.noLogrado,
   vacio: colors.borde,
-};
+});
+
+/** Colores de logrado / casi / no logrado del tema activo. */
+export function useColorEstado(): Record<EstadoDia, string> {
+  return crearColorEstado(useTema().colors);
+}

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { Boton, CampoNumero, CampoTexto, Etiqueta, Opciones } from '@/components/ui';
-import { colors, espacio } from '@/theme/colors';
+import { espacio } from '@/theme/colors';
+import { useTema } from '@/theme/TemaProvider';
 import type { CambiosAlimento, Unidad } from '@/types';
 
 /** Nombre, tipo (g/ml) y macros por 100. Lo usan "Nuevo alimento" y "Editar producto". */
@@ -15,6 +16,7 @@ export function FormularioAlimento({
   textoGuardar: string;
   onGuardar: (cambios: CambiosAlimento) => void;
 }) {
+  const { colors } = useTema();
   const [nombre, setNombre] = useState(inicial?.nombre ?? '');
   const [proteina, setProteina] = useState(inicial?.proteinaPor100g?.toString() ?? '');
   const [carbos, setCarbos] = useState(inicial?.carbosPor100g?.toString() ?? '');

@@ -4,11 +4,14 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Boton, CampoNumero } from '@/components/ui';
 import { textoCantidadRegistro } from '@/data/medidas';
 import { useApp } from '@/store/useApp';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { RegistroComida } from '@/types';
 
 /** Comida registrada; al tocarla se despliega para editar la cantidad (g o ml) o eliminarla. */
 export function FilaComida({ registro }: { registro: RegistroComida }) {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const actualizarCantidad = useApp((s) => s.actualizarCantidad);
   const eliminarRegistro = useApp((s) => s.eliminarRegistro);
   const [abierta, setAbierta] = useState(false);
@@ -67,6 +70,8 @@ export function FilaComida({ registro }: { registro: RegistroComida }) {
 }
 
 function Macro({ valor, letra, color }: { valor: number; letra: string; color: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={styles.macro}>
       <View style={[styles.punto, { backgroundColor: color }]} />
@@ -78,7 +83,8 @@ function Macro({ valor, letra, color }: { valor: number; letra: string; color: s
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   fila: { paddingVertical: espacio.md },
   cabecera: { flexDirection: 'row', alignItems: 'center', gap: espacio.md },
   macro: { flexDirection: 'row', alignItems: 'center', gap: 5, minWidth: 64, justifyContent: 'flex-end' },

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { Fragment, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
 import {
   OPCIONES_OBJETIVO,
@@ -22,11 +22,14 @@ import {
   TIPO_ENTRENAMIENTO_POR_DEFECTO,
 } from '@/lib/objetivos';
 import { useApp, useDatosUsuario } from '@/store/useApp';
-import { colors, espacio, tipografia } from '@/theme/colors';
-import { COLOR_ESTADO } from '@/theme/estados';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
+import { useColorEstado } from '@/theme/estados';
 import type { Perfil } from '@/types';
 
 export default function PerfilPantalla() {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const sesion = useApp((s) => s.sesion);
   const setSesion = useApp((s) => s.setSesion);
   const { perfil, alimentosPropios } = useDatosUsuario();
@@ -91,11 +94,55 @@ export default function PerfilPantalla() {
       <ProductosIncluidos />
 
       <Boton texto="Cerrar sesión" variante="secundario" onPress={cerrarSesion} />
+
+      <AjustesGenerales />
     </Pantalla>
   );
 }
 
+/** Última sección del perfil: preferencias de la app en este dispositivo. */
+function AjustesGenerales() {
+  const { colors, tipografia, esOscuro, preferencia, setPreferencia } = useTema();
+  const styles = useEstilos(crearEstilos);
+
+  return (
+    <View style={{ gap: espacio.sm }}>
+      <Text style={tipografia.subtitulo}>Ajustes generales</Text>
+      <Tarjeta style={{ gap: espacio.md }}>
+        <View style={styles.ajuste}>
+          <View style={{ flex: 1 }}>
+            <Text style={[tipografia.cuerpo, { fontWeight: '600' }]}>Modo oscuro</Text>
+            <Text style={tipografia.secundario}>
+              {preferencia === 'sistema' ? 'Siguiendo el tema del teléfono' : 'Elegido manualmente'}
+            </Text>
+          </View>
+          <Switch
+            value={esOscuro}
+            onValueChange={(activo) => setPreferencia(activo ? 'oscuro' : 'claro')}
+            trackColor={{ false: colors.borde, true: colors.acento }}
+            thumbColor={esOscuro ? colors.fondo : colors.superficie}
+            ios_backgroundColor={colors.borde}
+            accessibilityLabel="Modo oscuro"
+            // En web el color del círculo activo usa otra prop (no existe en los tipos nativos).
+            {...(Platform.OS === 'web' ? { activeThumbColor: colors.fondo } : {})}
+          />
+        </View>
+        {preferencia !== 'sistema' ? (
+          <>
+            <Separador />
+            <Pressable onPress={() => setPreferencia('sistema')} hitSlop={8} accessibilityRole="button">
+              <Text style={[tipografia.cuerpo, { fontWeight: '600' }]}>Usar el tema del teléfono</Text>
+            </Pressable>
+          </>
+        ) : null}
+      </Tarjeta>
+    </View>
+  );
+}
+
 function Dato({ texto, valor }: { texto: string; valor: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={styles.dato}>
       <Text style={tipografia.secundario}>{texto}</Text>
@@ -106,6 +153,7 @@ function Dato({ texto, valor }: { texto: string; valor: string }) {
 
 /** Cambiar el tipo recalcula al instante las metas de todos los planes y la meta activa. */
 function SelectorTipoEntrenamiento({ perfil }: { perfil: Perfil }) {
+  const { tipografia } = useTema();
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const actual = perfil.tipoEntrenamiento ?? TIPO_ENTRENAMIENTO_POR_DEFECTO;
 
@@ -129,6 +177,8 @@ function SelectorTipoEntrenamiento({ perfil }: { perfil: Perfil }) {
 }
 
 function MetasDiarias({ perfil }: { perfil: Perfil }) {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const calculadas = calcularDesglose(perfil);
   const manual = !!perfil.metasManuales;
@@ -224,6 +274,7 @@ function MetasDiarias({ perfil }: { perfil: Perfil }) {
 
 /** Productos incluidos que el usuario modificó o eliminó, con opción de restaurarlos. */
 function ProductosIncluidos() {
+  const { tipografia } = useTema();
   const { alimentosEditados, alimentosOcultos } = useDatosUsuario();
   const restaurar = useApp((s) => s.restaurarProductosIncluidos);
   const [confirmando, setConfirmando] = useState(false);
@@ -258,6 +309,9 @@ function ProductosIncluidos() {
 }
 
 function UmbralesCalendario({ perfil }: { perfil: Perfil }) {
+  const COLOR_ESTADO = useColorEstado();
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const [logrado, setLogrado] = useState(String(perfil.umbrales.logrado));
   const [casi, setCasi] = useState(String(perfil.umbrales.casi));
@@ -307,6 +361,7 @@ function UmbralesCalendario({ perfil }: { perfil: Perfil }) {
 }
 
 function Leyenda({ color, texto }: { color: string; texto: string }) {
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <View style={[styles.punto, { backgroundColor: color, marginBottom: espacio.sm }]} />
@@ -315,9 +370,11 @@ function Leyenda({ color, texto }: { color: string; texto: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   cabeceraTarjeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: -8 },
   dato: { flexDirection: 'row', justifyContent: 'space-between', gap: espacio.md },
+  ajuste: { flexDirection: 'row', alignItems: 'center', gap: espacio.md },
   alimento: { flexDirection: 'row', alignItems: 'center', gap: espacio.md, paddingVertical: espacio.sm },
   punto: { width: 10, height: 10, borderRadius: 3 },
 });

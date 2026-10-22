@@ -9,7 +9,8 @@ import { Boton, Etiqueta, Pantalla, Separador, Tarjeta } from '@/components/ui';
 import { macrosPara } from '@/data/alimentos';
 import { atajosCantidad, unidadDe } from '@/data/medidas';
 import { useAlimentos, useApp } from '@/store/useApp';
-import { espacio, tipografia } from '@/theme/colors';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { Alimento } from '@/types';
 
 const TEXTO_ORIGEN: Record<NonNullable<Alimento['origen']>, string> = {
@@ -19,6 +20,8 @@ const TEXTO_ORIGEN: Record<NonNullable<Alimento['origen']>, string> = {
 };
 
 export default function EditarAlimento() {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const { id } = useLocalSearchParams<{ id: string }>();
   const alimento = useAlimentos().find((a) => a.id === id);
   const editarAlimento = useApp((s) => s.editarAlimento);
@@ -129,7 +132,8 @@ export default function EditarAlimento() {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   fila: { flexDirection: 'row', alignItems: 'center' },
   colPorcion: { flex: 1.6 },
   colValor: { flex: 1, textAlign: 'right' },

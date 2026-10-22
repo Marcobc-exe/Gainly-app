@@ -1,7 +1,8 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Boton } from '@/components/ui';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { Alimento } from '@/types';
 
 export function mensajeEliminarAlimento(alimento: Alimento): string {
@@ -28,6 +29,8 @@ export function DialogoConfirmacion({
   onConfirmar: () => void;
   onCancelar: () => void;
 }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancelar}>
       <Pressable style={styles.fondo} onPress={onCancelar} accessibilityLabel="Cerrar">
@@ -44,10 +47,11 @@ export function DialogoConfirmacion({
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   fondo: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: colors.velo,
     alignItems: 'center',
     justifyContent: 'center',
     padding: espacio.xl,

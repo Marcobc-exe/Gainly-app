@@ -5,9 +5,10 @@ import { CabeceraModal } from '@/components/CabeceraModal';
 import { FormularioAlimento } from '@/components/FormularioAlimento';
 import { Pantalla } from '@/components/ui';
 import { useApp } from '@/store/useApp';
-import { tipografia } from '@/theme/colors';
+import { useTema } from '@/theme/TemaProvider';
 
 export default function AlimentoNuevo() {
+  const { tipografia } = useTema();
   const { fecha, nombre } = useLocalSearchParams<{ fecha?: string; nombre?: string }>();
   const guardarAlimentoPropio = useApp((s) => s.guardarAlimentoPropio);
 

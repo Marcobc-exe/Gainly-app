@@ -2,9 +2,12 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconoCerrar, IconoFlecha } from '@/components/Iconos';
-import { colors, espacio, tipografia } from '@/theme/colors';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 
 export function CabeceraModal({ titulo, tipo = 'cerrar' }: { titulo: string; tipo?: 'cerrar' | 'atras' }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={styles.cabecera}>
       {tipo === 'atras' ? <Volver /> : null}
@@ -15,6 +18,7 @@ export function CabeceraModal({ titulo, tipo = 'cerrar' }: { titulo: string; tip
 }
 
 function Volver({ cerrar }: { cerrar?: boolean }) {
+  const styles = useEstilos(crearEstilos);
   return (
     <Pressable
       onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
@@ -27,7 +31,8 @@ function Volver({ cerrar }: { cerrar?: boolean }) {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   cabecera: { flexDirection: 'row', alignItems: 'center', gap: espacio.md },
   boton: {
     width: 36,

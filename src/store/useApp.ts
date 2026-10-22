@@ -7,6 +7,7 @@ import { ALIMENTOS_BASE, combinarAlimentos, macrosPara } from '@/data/alimentos'
 import { unidadDe } from '@/data/medidas';
 import { estadoDelDia, sumarRegistros } from '@/lib/estadoDia';
 import { hoy, nuevoId } from '@/lib/fechas';
+import type { PreferenciaTema } from '@/theme/tema';
 import { metasDePerfil, TIPO_ENTRENAMIENTO_POR_DEFECTO } from '@/lib/objetivos';
 import type {
   Alimento,
@@ -43,7 +44,10 @@ const datosVacios = (): DatosUsuario => ({
 interface EstadoApp {
   sesion: Usuario | null;
   datos: Record<string, DatosUsuario>;
+  /** Tema elegido en este dispositivo (no depende del usuario). */
+  preferenciaTema: PreferenciaTema;
 
+  setPreferenciaTema(p: PreferenciaTema): void;
   setSesion(u: Usuario | null): void;
   guardarPerfil(p: Perfil): void;
   /** `cantidad` en gramos o mililitros según el alimento; `medida` es el texto de la medida casera. */
@@ -73,6 +77,9 @@ export const useApp = create<EstadoApp>()(
       return {
         sesion: null,
         datos: {},
+        preferenciaTema: 'sistema',
+
+        setPreferenciaTema: (preferenciaTema) => set({ preferenciaTema }),
 
         setSesion: (u) =>
           set((s) => ({
@@ -185,7 +192,7 @@ export const useApp = create<EstadoApp>()(
       version: 4,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: migrarEstado,
-      partialize: (s) => ({ sesion: s.sesion, datos: s.datos }),
+      partialize: (s) => ({ sesion: s.sesion, datos: s.datos, preferenciaTema: s.preferenciaTema }),
     },
   ),
 );

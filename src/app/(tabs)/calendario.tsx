@@ -18,8 +18,9 @@ import { Pantalla, Tarjeta } from '@/components/ui';
 import { contarEstados, porcentaje, sumarRegistros } from '@/lib/estadoDia';
 import { claveFecha, formatoLargo, formatoMes, hoy } from '@/lib/fechas';
 import { useEstadosPorDia, useMetaDe, useRegistrosDe } from '@/store/useApp';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
-import { COLOR_ESTADO, TEXTO_ESTADO } from '@/theme/estados';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
+import { useColorEstado, TEXTO_ESTADO } from '@/theme/estados';
 import type { EstadoDia } from '@/types';
 
 const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -30,6 +31,9 @@ const LEYENDA: [EstadoDia, string][] = [
 ];
 
 export default function Calendario() {
+  const COLOR_ESTADO = useColorEstado();
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const [mes, setMes] = useState(() => startOfMonth(new Date()));
   const [seleccion, setSeleccion] = useState(hoy);
   const estados = useEstadosPorDia();
@@ -152,6 +156,9 @@ export default function Calendario() {
 }
 
 function DetalleDia({ fecha, estado }: { fecha: string; estado: EstadoDia }) {
+  const COLOR_ESTADO = useColorEstado();
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const registros = useRegistrosDe(fecha);
   const meta = useMetaDe(fecha);
   const totales = sumarRegistros(registros);
@@ -182,6 +189,8 @@ function DetalleDia({ fecha, estado }: { fecha: string; estado: EstadoDia }) {
 }
 
 function Barra({ titulo, consumido, meta, color }: { titulo: string; consumido: number; meta: number; color: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const pct = porcentaje(consumido, meta);
   return (
     <View style={{ gap: 6 }}>
@@ -198,7 +207,8 @@ function Barra({ titulo, consumido, meta, color }: { titulo: string; consumido: 
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   resumen: { flexDirection: 'row', gap: espacio.md },
   stat: { flex: 1, gap: 2 },
   statValor: { fontSize: 34, fontWeight: '700', color: colors.texto, letterSpacing: -0.5, marginTop: espacio.xs },

@@ -12,10 +12,13 @@ import { buscarAlimentos, macrosPara } from '@/data/alimentos';
 import { unidadDe } from '@/data/medidas';
 import { formatoLargo, hoy } from '@/lib/fechas';
 import { useAlimentos, useApp, useDatosUsuario } from '@/store/useApp';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { Alimento } from '@/types';
 
 export default function AgregarComida() {
+  const { colors, tipografia, esOscuro } = useTema();
+  const styles = useEstilos(crearEstilos);
   const { fecha: fechaParam, alimentoId } = useLocalSearchParams<{ fecha?: string; alimentoId?: string }>();
   const fecha = fechaParam ?? hoy();
   const alimentos = useAlimentos();
@@ -116,6 +119,7 @@ export default function AgregarComida() {
               onChangeText={setConsulta}
               placeholder="Buscar: pollo, arroz, atún…"
               placeholderTextColor={colors.textoTenue}
+              keyboardAppearance={esOscuro ? 'dark' : 'light'}
               style={styles.input}
               autoCorrect={false}
               autoFocus
@@ -201,6 +205,8 @@ export default function AgregarComida() {
 }
 
 function Vista({ titulo, valor, color }: { titulo: string; valor: number; color: string }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={{ flex: 1 }}>
       <View style={[styles.punto, { backgroundColor: color }]} />
@@ -210,7 +216,8 @@ function Vista({ titulo, valor, color }: { titulo: string; valor: number; color:
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: colors.fondo },
   cabecera: { padding: espacio.lg, paddingBottom: espacio.sm, gap: 2 },
   cuerpo: { padding: espacio.lg, gap: espacio.lg },

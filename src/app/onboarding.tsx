@@ -17,7 +17,8 @@ import { ResumenMetas } from '@/components/ResumenMetas';
 import { Boton, Pantalla } from '@/components/ui';
 import { calcularDesglose } from '@/lib/objetivos';
 import { useApp } from '@/store/useApp';
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 
 const PASOS = [
   { titulo: 'Sobre ti', subtitulo: 'Necesitamos algunos datos para calcular tus metas diarias.' },
@@ -28,6 +29,8 @@ const PASOS = [
 ];
 
 export default function Onboarding() {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const sesion = useApp((s) => s.sesion);
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const setSesion = useApp((s) => s.setSesion);
@@ -101,7 +104,8 @@ export default function Onboarding() {
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   progreso: { flexDirection: 'row', gap: 6 },
   segmento: { flex: 1, height: 4, borderRadius: radios.sm, backgroundColor: colors.borde },
   error: { color: colors.peligro, fontSize: 14 },

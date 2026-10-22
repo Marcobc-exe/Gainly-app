@@ -12,7 +12,8 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { IconoBasurero, IconoLapiz } from '@/components/Iconos';
 import { unidadDe } from '@/data/medidas';
-import { colors, espacio, tipografia } from '@/theme/colors';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { Alimento } from '@/types';
 
 /** Ancho de cada botón (Editar, Eliminar) cuando la casilla queda abierta. */
@@ -38,6 +39,8 @@ interface Props {
  * deslizar hasta el final pone la casilla roja y pide eliminar.
  */
 export function FilaAlimentoDeslizable({ alimento, abierta, onAbrir, onCerrar, onElegir, onEditar, onEliminar }: Props) {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const x = useSharedValue(0);
   const inicio = useSharedValue(0);
   const ancho = useSharedValue(360);
@@ -125,7 +128,7 @@ export function FilaAlimentoDeslizable({ alimento, abierta, onAbrir, onCerrar, o
         accessibilityElementsHidden={!abierta}
         importantForAccessibility={abierta ? 'auto' : 'no-hide-descendants'}
       >
-        <Animated.View style={[styles.accion, { backgroundColor: colors.acento }, estiloEditar]}>
+        <Animated.View style={[styles.accion, { backgroundColor: colors.accionEditar }, estiloEditar]}>
           <Pressable onPress={onEditar} style={styles.botonAccion} accessibilityLabel={`Editar ${alimento.nombre}`}>
             <IconoLapiz color={colors.sobreAcento} />
             <Text style={styles.textoAccion}>Editar</Text>
@@ -179,7 +182,8 @@ export function FilaAlimentoDeslizable({ alimento, abierta, onAbrir, onCerrar, o
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   contenedor: { overflow: 'hidden' },
   acciones: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end' },
   accion: { overflow: 'hidden' },

@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors, espacio, radios, tipografia } from '@/theme/colors';
+import { espacio, radios, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 
 export function Pantalla({
   children,
@@ -24,6 +25,7 @@ export function Pantalla({
   scroll?: boolean;
   bordes?: ('top' | 'bottom')[];
 }) {
+  const styles = useEstilos(crearEstilos);
   return (
     <SafeAreaView style={styles.pantalla} edges={bordes}>
       {scroll ? (
@@ -44,14 +46,17 @@ export function Pantalla({
 }
 
 export function Tarjeta({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const styles = useEstilos(crearEstilos);
   return <View style={[styles.tarjeta, style]}>{children}</View>;
 }
 
 export function Titulo({ children }: { children: ReactNode }) {
+  const { tipografia } = useTema();
   return <Text style={tipografia.titulo}>{children}</Text>;
 }
 
 export function Etiqueta({ children }: { children: ReactNode }) {
+  const { tipografia } = useTema();
   return <Text style={[tipografia.etiqueta, { marginBottom: espacio.sm }]}>{children}</Text>;
 }
 
@@ -72,6 +77,8 @@ export function Boton({
   icono?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }) {
+  const { colors } = useTema();
+  const styles = useEstilos(crearEstilos);
   const primario = variante === 'primario';
   const colorTexto = primario
     ? colors.sobreAcento
@@ -98,7 +105,14 @@ export function Boton({
       ) : (
         <>
           {icono}
-          <Text style={[styles.botonTexto_, { color: colorTexto }]}>{texto}</Text>
+          <Text
+            style={[
+              styles.botonTexto_,
+              { color: colorTexto },
+            ]}
+          >
+            {texto}
+          </Text>
         </>
       )}
     </Pressable>
@@ -117,6 +131,8 @@ export function CampoNumero({
   onChange: (v: string) => void;
   sufijo?: string;
 } & Omit<TextInputProps, 'value' | 'onChangeText' | 'onChange'>) {
+  const { colors, esOscuro } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={{ flex: 1 }}>
       {etiqueta ? <Etiqueta>{etiqueta}</Etiqueta> : null}
@@ -126,6 +142,7 @@ export function CampoNumero({
           onChangeText={(t) => onChange(t.replace(',', '.').replace(/[^0-9.]/g, ''))}
           keyboardType="decimal-pad"
           placeholderTextColor={colors.textoTenue}
+          keyboardAppearance={esOscuro ? 'dark' : 'light'}
           style={styles.campoInput}
           {...rest}
         />
@@ -136,12 +153,15 @@ export function CampoNumero({
 }
 
 export function CampoTexto(props: TextInputProps & { etiqueta?: string }) {
+  const { colors, esOscuro } = useTema();
+  const styles = useEstilos(crearEstilos);
   const { etiqueta, style, ...rest } = props;
   return (
     <View>
       {etiqueta ? <Etiqueta>{etiqueta}</Etiqueta> : null}
       <View style={styles.campo}>
-        <TextInput placeholderTextColor={colors.textoTenue} style={[styles.campoInput, style]} {...rest} />
+        <TextInput placeholderTextColor={colors.textoTenue}
+          keyboardAppearance={esOscuro ? 'dark' : 'light'} style={[styles.campoInput, style]} {...rest} />
       </View>
     </View>
   );
@@ -159,6 +179,8 @@ export function Opciones<T extends string>({
   onChange: (v: T) => void;
   horizontal?: boolean;
 }) {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={horizontal ? { flexDirection: 'row', gap: espacio.sm } : { gap: espacio.sm }}>
       {opciones.map((o) => {
@@ -171,9 +193,9 @@ export function Opciones<T extends string>({
             accessibilityState={{ selected: activo }}
             style={[styles.opcion, horizontal && { flex: 1, alignItems: 'center' }, activo && styles.opcionActiva]}
           >
-            <Text style={[styles.opcionTitulo, activo && { color: colors.sobreAcento }]}>{o.titulo}</Text>
+            <Text style={[styles.opcionTitulo, activo && { color: colors.seleccionTexto }]}>{o.titulo}</Text>
             {o.descripcion ? (
-              <Text style={[tipografia.secundario, { marginTop: 2 }, activo && { color: '#DADAD8' }]}>
+              <Text style={[tipografia.secundario, { marginTop: 2 }, activo && { color: colors.seleccionTextoSecundario }]}>
                 {o.descripcion}
               </Text>
             ) : null}
@@ -198,6 +220,8 @@ export function Contador({
   max: number;
   sufijo?: string;
 }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <View style={styles.contador}>
       <Pressable
@@ -223,6 +247,8 @@ export function Contador({
 }
 
 export function Chip({ texto, activo, onPress }: { texto: string; activo?: boolean; onPress: () => void }) {
+  const { colors } = useTema();
+  const styles = useEstilos(crearEstilos);
   return (
     <Pressable
       onPress={onPress}
@@ -230,7 +256,7 @@ export function Chip({ texto, activo, onPress }: { texto: string; activo?: boole
       accessibilityState={{ selected: !!activo }}
       style={[styles.chip, activo && styles.chipActivo]}
     >
-      <Text style={[styles.chipTexto, activo && { color: colors.sobreAcento }]} numberOfLines={1}>
+      <Text style={[styles.chipTexto, activo && { color: colors.seleccionTexto }]} numberOfLines={1}>
         {texto}
       </Text>
     </Pressable>
@@ -238,10 +264,12 @@ export function Chip({ texto, activo, onPress }: { texto: string; activo?: boole
 }
 
 export function Separador() {
+  const { colors } = useTema();
   return <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: colors.borde }} />;
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: colors.fondo },
   contenido: { padding: espacio.lg, paddingBottom: 120, gap: espacio.lg },
   tarjeta: {
@@ -283,7 +311,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: espacio.lg,
   },
-  opcionActiva: { backgroundColor: colors.acento, borderColor: colors.acento },
+  opcionActiva: { backgroundColor: colors.seleccionFondo, borderColor: colors.seleccionBorde, borderWidth: 2 },
   opcionTitulo: { fontSize: 16, fontWeight: '600', color: colors.texto },
   contador: {
     flexDirection: 'row',
@@ -314,6 +342,6 @@ const styles = StyleSheet.create({
     borderColor: colors.borde,
     maxWidth: '100%',
   },
-  chipActivo: { backgroundColor: colors.acento, borderColor: colors.acento },
+  chipActivo: { backgroundColor: colors.seleccionFondo, borderColor: colors.seleccionBorde, borderWidth: 2 },
   chipTexto: { fontSize: 14, color: colors.texto, fontWeight: '500' },
 });

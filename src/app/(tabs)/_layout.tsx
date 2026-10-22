@@ -1,37 +1,28 @@
-import { Tabs } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import TopTabs from 'expo-router/js-top-tabs';
+import type { ComponentProps } from 'react';
+import { View } from 'react-native';
 
-import { IconoCalendario, IconoHoy, IconoPerfil } from '@/components/Iconos';
-import { colors } from '@/theme/colors';
+import { BarraPestanas } from '@/components/BarraPestanas';
+import { useTema } from '@/theme/TemaProvider';
 
+/** Pestañas principales: se cambia deslizando el contenido a izquierda/derecha o tocando la barra. */
 export default function TabsLayout() {
+  const { colors } = useTema();
   return (
-    <Tabs
+    <TopTabs
+      tabBarPosition="bottom"
+      tabBar={(props: ComponentProps<typeof BarraPestanas>) => <BarraPestanas {...props} />}
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.texto,
-        tabBarInactiveTintColor: colors.textoTenue,
-        tabBarStyle: {
-          backgroundColor: colors.superficie,
-          borderTopColor: colors.borde,
-          borderTopWidth: StyleSheet.hairlineWidth,
-        },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        swipeEnabled: true,
+        animationEnabled: true,
+        lazy: true,
+        lazyPlaceholder: () => <View style={{ flex: 1, backgroundColor: colors.fondo }} />,
         sceneStyle: { backgroundColor: colors.fondo },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{ title: 'Hoy', tabBarIcon: ({ color }) => <IconoHoy color={color as string} /> }}
-      />
-      <Tabs.Screen
-        name="calendario"
-        options={{ title: 'Calendario', tabBarIcon: ({ color }) => <IconoCalendario color={color as string} /> }}
-      />
-      <Tabs.Screen
-        name="perfil"
-        options={{ title: 'Perfil', tabBarIcon: ({ color }) => <IconoPerfil color={color as string} /> }}
-      />
-    </Tabs>
+      <TopTabs.Screen name="index" options={{ title: 'Hoy' }} />
+      <TopTabs.Screen name="calendario" options={{ title: 'Calendario' }} />
+      <TopTabs.Screen name="perfil" options={{ title: 'Perfil' }} />
+    </TopTabs>
   );
 }

@@ -19,9 +19,11 @@ import { ResumenMetas } from '@/components/ResumenMetas';
 import { Boton, Etiqueta, Pantalla } from '@/components/ui';
 import { calcularDesglose } from '@/lib/objetivos';
 import { useApp, usePerfil } from '@/store/useApp';
-import { colors, espacio, tipografia } from '@/theme/colors';
+import { espacio } from '@/theme/colors';
+import { useTema } from '@/theme/TemaProvider';
 
 export default function EditarPerfil() {
+  const { colors, tipografia } = useTema();
   const perfil = usePerfil();
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const [borrador, setBorrador] = useState<BorradorPerfil>(() => borradorDesdePerfil(perfil!));

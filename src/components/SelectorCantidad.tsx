@@ -2,7 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { CampoNumero, Chip } from '@/components/ui';
 import { atajosCantidad } from '@/data/medidas';
-import { espacio, tipografia } from '@/theme/colors';
+import { espacio, type Paleta } from '@/theme/colors';
+import { useEstilos, useTema } from '@/theme/TemaProvider';
 import type { Unidad } from '@/types';
 
 /**
@@ -23,6 +24,8 @@ export function SelectorCantidad({
   onChange: (valor: string, medida?: string) => void;
   onListo?: () => void;
 }) {
+  const { tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
   const liquido = unidad === 'ml';
   const atajos = atajosCantidad(unidad);
 
@@ -55,7 +58,8 @@ export function SelectorCantidad({
   );
 }
 
-const styles = StyleSheet.create({
+const crearEstilos = (colors: Paleta) =>
+  StyleSheet.create({
   cabecera: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: espacio.sm },
 });
