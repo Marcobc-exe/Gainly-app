@@ -28,9 +28,16 @@ npx expo lint
 - `src/lib/auth/` — `AuthService` + `mockAuth` (simulated login).
 - `src/theme/colors.ts` — color palette.
 
-## Real login (pending)
+## Login (Supabase Auth)
 
-Login is currently simulated and everything is stored on the device. For real Google, Facebook, and Apple sign-in: create an `AuthService` implementation (e.g. with Firebase Auth using `@react-native-google-signin/google-signin`, `react-native-fbsdk-next`, and `expo-apple-authentication`), switch `auth` in `src/lib/auth/mockAuth.ts`, and create a development build (`npx expo run:ios|android` or EAS). This requires Apple and Meta developer accounts and a project in the provider's console.
+Real sign-in with **Apple** (native, iOS only), **Google** and **Facebook** (system browser, PKCE) and **email** (one-time code; its length is set in Supabase → Email OTP Length). Data stays on the phone, stored per account.
+
+- Config: `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` (local) and in the EAS `production` environment (published updates). Without them the app runs in demo mode (`mockAuth`).
+- Code: `src/lib/auth/supabase.ts` (client), `src/lib/auth/supabaseAuth.ts` (providers), `src/app/login.tsx` (UI).
+- Supabase dashboard: Redirect URLs `exp://**` and `gainly://**`; Apple Client IDs `host.exp.Exponent,com.gainly.app`; Google and Facebook use the callback `https://<project>.supabase.co/auth/v1/callback`; the Magic Link and Confirm signup templates include `{{ .Token }}` (needs custom SMTP).
+- Supabase rejects return URLs whose host is an IP address (like Expo Go's `exp://192.168.x.x:8081/--/login` while running the local server), so on iOS Google and Facebook always return to `gainly://login`; the browser session catches it by scheme, even inside Expo Go.
+- The first real sign-in adopts the data from the old simulated login (`local-*`), see `adoptarDatosLocales` in `src/store/useApp.ts`.
+- Testers: add them as Google *Test users* and as Meta *Testers* while those apps are in testing/development mode. Email and Apple work for anyone.
 
 ## Publish to my phone (EAS Update + Expo Go)
 

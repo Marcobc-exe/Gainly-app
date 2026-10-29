@@ -81,25 +81,34 @@ export function IconoCerrar({ color: colorProp, tamano = 20 }: P) {
   );
 }
 
-export function IconoGoogle({ color: colorProp, tamano = 20 }: P) {
-  const color = useColorIcono(colorProp);
+/** Logo de Google con sus colores de marca, igual en tema claro y oscuro. */
+export function IconoGoogle({ tamano = 20 }: P) {
   return (
   <Svg {...base(tamano)}>
     <Path
-      d="M20.5 12.2c0-.6-.1-1.2-.2-1.8H12v3.4h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.6-3.9 2.6-6.5z M12 21c2.4 0 4.4-.8 5.9-2.2L15 16.6c-.8.5-1.8.9-3 .9-2.3 0-4.3-1.6-5-3.7H4v2.3A9 9 0 0 0 12 21z M7 13.8a5.4 5.4 0 0 1 0-3.5V8H4a9 9 0 0 0 0 8.1l3-2.3z M12 6.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 4 8l3 2.3c.7-2.1 2.7-3.7 5-3.7z"
-      fill={color}
+      d="M20.5 12.2c0-.6-.1-1.2-.2-1.8H12v3.4h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.6-3.9 2.6-6.5z"
+      fill="#4285F4"
+    />
+    <Path
+      d="M12 21c2.4 0 4.4-.8 5.9-2.2L15 16.6c-.8.5-1.8.9-3 .9-2.3 0-4.3-1.6-5-3.7H4v2.3A9 9 0 0 0 12 21z"
+      fill="#34A853"
+    />
+    <Path d="M7 13.8a5.4 5.4 0 0 1 0-3.5V8H4a9 9 0 0 0 0 8.1l3-2.3z" fill="#FBBC05" />
+    <Path
+      d="M12 6.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 4 8l3 2.3c.7-2.1 2.7-3.7 5-3.7z"
+      fill="#EA4335"
     />
   </Svg>
   );
 }
 
-export function IconoFacebook({ color: colorProp, tamano = 20 }: P) {
-  const color = useColorIcono(colorProp);
+/** Logo de Facebook en su azul de marca, igual en tema claro y oscuro. */
+export function IconoFacebook({ tamano = 20 }: P) {
   return (
   <Svg {...base(tamano)}>
     <Path
       d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21h3z"
-      fill={color}
+      fill="#0866FF"
     />
   </Svg>
   );
@@ -141,5 +150,15 @@ export function IconoBasurero({ color: colorProp, tamano = 22 }: P) {
     <Path d="M6 7l1 13h10l1-13" stroke={color} strokeWidth={1.8} strokeLinejoin="round" />
     <Path d="M10 11v6M14 11v6" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
   </Svg>
+  );
+}
+
+export function IconoCorreo({ color: colorProp, tamano = 20 }: P) {
+  const color = useColorIcono(colorProp);
+  return (
+    <Svg {...base(tamano)}>
+      <Rect x={3.5} y={5.5} width={17} height={13} rx={2.5} stroke={color} strokeWidth={1.8} />
+      <Path d="M4.5 7l7.5 6 7.5-6" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
   );
 }

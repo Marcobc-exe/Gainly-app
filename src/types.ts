@@ -89,10 +89,14 @@ export interface RegistroComida {
 
 export type EstadoDia = 'logrado' | 'casi' | 'no_logrado' | 'vacio';
 
-export type ProveedorAuth = 'google' | 'facebook' | 'apple';
+export type ProveedorAuth = 'google' | 'facebook' | 'apple' | 'correo';
+/** Proveedores que se inician con un botón (el correo usa código). */
+export type ProveedorBoton = Exclude<ProveedorAuth, 'correo'>;
 
 export interface Usuario {
+  /** uuid de Supabase, o `local-<proveedor>` en modo demo. */
   id: string;
   proveedor: ProveedorAuth;
   nombre: string;
+  email?: string;
 }

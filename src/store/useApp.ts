@@ -5,6 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { ALIMENTOS_BASE, combinarAlimentos, macrosPara } from '@/data/alimentos';
 import { unidadDe } from '@/data/medidas';
+import { esIdLocal } from '@/lib/auth/usuario';
 import { estadoDelDia, sumarRegistros } from '@/lib/estadoDia';
 import { hoy, nuevoId } from '@/lib/fechas';
 import type { PreferenciaTema } from '@/theme/tema';
@@ -82,10 +83,12 @@ export const useApp = create<EstadoApp>()(
         setPreferenciaTema: (preferenciaTema) => set({ preferenciaTema }),
 
         setSesion: (u) =>
-          set((s) => ({
-            sesion: u,
-            datos: u && !s.datos[u.id] ? { ...s.datos, [u.id]: datosVacios() } : s.datos,
-          })),
+          set((s) => {
+            if (!u) return { sesion: null };
+            // Primer login real: los datos del login simulado anterior pasan a esta cuenta.
+            const datos = esIdLocal(u.id) ? s.datos : adoptarDatosLocales(s.datos, u.id);
+            return { sesion: u, datos: datos[u.id] ? datos : { ...datos, [u.id]: datosVacios() } };
+          }),
 
         guardarPerfil: (perfil) =>
           mutar((d) => {
@@ -202,6 +205,23 @@ export const useApp = create<EstadoApp>()(
  * v3 añade los cambios y eliminaciones de productos incluidos.
  * v4 añade el tipo de entrenamiento al perfil (Hipertrofia para perfiles existentes).
  */
+/**
+ * Si la cuenta `nuevoId` aún no tiene perfil y hay datos del login simulado (`local-*`),
+ * mueve a esa cuenta el conjunto local con más registros. No toca cuentas que ya tienen datos.
+ */
+export function adoptarDatosLocales<D extends { perfil?: unknown; registros: unknown[] }>(
+  datos: Record<string, D>,
+  nuevoId: string,
+): Record<string, D> {
+  if (datos[nuevoId]?.perfil) return datos;
+  const locales = Object.entries(datos).filter(([id, d]) => esIdLocal(id) && d.perfil);
+  if (locales.length === 0) return datos;
+  const [idOrigen, origen] = locales.sort((a, b) => b[1].registros.length - a[1].registros.length)[0];
+  const resto = { ...datos };
+  delete resto[idOrigen];
+  return { ...resto, [nuevoId]: origen };
+}
+
 export function migrarEstado(guardado: unknown, version: number) {
   const estado = guardado as { sesion: Usuario | null; datos: Record<string, DatosUsuario> };
   if (version < 2) {

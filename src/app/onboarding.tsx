@@ -15,6 +15,7 @@ import {
 } from '@/components/CamposPerfil';
 import { DialogoConfirmacion } from '@/components/DialogoConfirmacion';
 import { ResumenMetas } from '@/components/ResumenMetas';
+import { auth } from '@/lib/auth/mockAuth';
 import { Boton, Pantalla } from '@/components/ui';
 import { calcularDesglose } from '@/lib/objetivos';
 import { useApp } from '@/store/useApp';
@@ -36,7 +37,10 @@ export default function Onboarding() {
   const guardarPerfil = useApp((s) => s.guardarPerfil);
   const setSesion = useApp((s) => s.setSesion);
   const [paso, setPaso] = useState(0);
-  const [borrador, setBorrador] = useState<BorradorPerfil>(() => borradorVacio());
+  const [borrador, setBorrador] = useState<BorradorPerfil>(() =>
+    // Con Google/Facebook/Apple ya sabemos el nombre: se propone el primero.
+    borradorVacio(sesion && sesion.proveedor !== 'correo' && auth.real ? sesion.nombre.split(' ')[0] : ''),
+  );
   const [error, setError] = useState<string | null>(null);
   const [confirmandoSalida, setConfirmandoSalida] = useState(false);
 
@@ -111,7 +115,7 @@ export default function Onboarding() {
         onCancelar={() => setConfirmandoSalida(false)}
         onConfirmar={() => {
           setConfirmandoSalida(false);
-          setSesion(null);
+          auth.cerrarSesion().finally(() => setSesion(null));
         }}
       />
     </Pantalla>

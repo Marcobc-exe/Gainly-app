@@ -46,7 +46,10 @@ export default function PerfilPantalla() {
     <Pantalla>
       <View>
         <Text style={tipografia.titulo}>{perfil.nombre || sesion.nombre}</Text>
-        <Text style={tipografia.secundario}>Sesión iniciada con {NOMBRE_PROVEEDOR[sesion.proveedor]}</Text>
+        <Text style={tipografia.secundario}>
+          Sesión iniciada con {NOMBRE_PROVEEDOR[sesion.proveedor]}
+          {sesion.email ? ` · ${sesion.email}` : ''}
+        </Text>
       </View>
 
       <Tarjeta style={{ gap: espacio.md }}>
