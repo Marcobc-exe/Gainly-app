@@ -24,10 +24,12 @@ interface Ruta {
 interface Props {
   state: { index: number; routes: Ruta[] };
   descriptors: Record<string, { options: { title?: string } }>;
-  navigation: {
+  /** Eventos del navegador (SDK 58): se emite `tabPress` antes de cambiar de pestaña. */
+  emitter: {
     emit: (e: { type: 'tabPress'; target: string; canPreventDefault: true }) => { defaultPrevented: boolean };
-    navigate: (name: string) => void;
   };
+  /** Cambia a la pestaña con esa clave de ruta (con animación del pager). */
+  navigateToTab: (routeKey: string) => void;
   /** Posición continua del pager (0 = primera pestaña); sigue al dedo al deslizar. */
   position: Animated.AnimatedInterpolation<number>;
 }
@@ -36,7 +38,7 @@ interface Props {
  * Barra inferior: una píldora marca la pestaña activa y se desliza siguiendo el gesto
  * del pager; el icono dentro de la píldora se invierte con un fundido.
  */
-export function BarraPestanas({ state, descriptors, navigation, position }: Props) {
+export function BarraPestanas({ state, descriptors, emitter, navigateToTab, position }: Props) {
   const { colors } = useTema();
   const styles = useEstilos(crearEstilos);
   const { bottom } = useSafeAreaInsets();
@@ -103,8 +105,8 @@ export function BarraPestanas({ state, descriptors, navigation, position }: Prop
             titulo={titulo}
             enfocada={enfocada}
             onPress={() => {
-              const evento = navigation.emit({ type: 'tabPress', target: ruta.key, canPreventDefault: true });
-              if (!enfocada && !evento.defaultPrevented) navigation.navigate(ruta.name);
+              const evento = emitter.emit({ type: 'tabPress', target: ruta.key, canPreventDefault: true });
+              if (!enfocada && !evento.defaultPrevented) navigateToTab(ruta.key);
             }}
           >
             <View style={styles.zonaIcono}>

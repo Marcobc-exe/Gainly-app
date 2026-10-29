@@ -43,6 +43,19 @@
     "scheme": "gainly",
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b179917e-53b5-4999-8278-1cb2bfb26590"
+      }
+    },
+    "owner": "marco.exe",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b179917e-53b5-4999-8278-1cb2bfb26590"
     }
   }
 }

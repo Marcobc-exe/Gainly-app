@@ -1,4 +1,4 @@
-import TopTabs from 'expo-router/js-top-tabs';
+import { TopTabs } from 'expo-router/js-top-tabs';
 import type { ComponentProps } from 'react';
 import { View } from 'react-native';
 

@@ -33,6 +33,7 @@ export default function PerfilPantalla() {
   const sesion = useApp((s) => s.sesion);
   const setSesion = useApp((s) => s.setSesion);
   const { perfil, alimentosPropios } = useDatosUsuario();
+  const [confirmandoSalida, setConfirmandoSalida] = useState(false);
 
   if (!perfil || !sesion) return null;
 
@@ -93,7 +94,18 @@ export default function PerfilPantalla() {
 
       <ProductosIncluidos />
 
-      <Boton texto="Cerrar sesión" variante="secundario" onPress={cerrarSesion} />
+      <Boton texto="Cerrar sesión" variante="secundario" onPress={() => setConfirmandoSalida(true)} />
+      <DialogoConfirmacion
+        visible={confirmandoSalida}
+        titulo="¿Cerrar sesión?"
+        mensaje="Tendrás que volver a iniciar sesión para ver tus datos. Tus comidas y tu perfil se quedan guardados en este teléfono."
+        textoConfirmar="Cerrar sesión"
+        onCancelar={() => setConfirmandoSalida(false)}
+        onConfirmar={() => {
+          setConfirmandoSalida(false);
+          cerrarSesion();
+        }}
+      />
 
       <AjustesGenerales />
     </Pantalla>

@@ -13,6 +13,7 @@ import {
   perfilDeBorrador,
   type BorradorPerfil,
 } from '@/components/CamposPerfil';
+import { DialogoConfirmacion } from '@/components/DialogoConfirmacion';
 import { ResumenMetas } from '@/components/ResumenMetas';
 import { Boton, Pantalla } from '@/components/ui';
 import { calcularDesglose } from '@/lib/objetivos';
@@ -37,6 +38,7 @@ export default function Onboarding() {
   const [paso, setPaso] = useState(0);
   const [borrador, setBorrador] = useState<BorradorPerfil>(() => borradorVacio());
   const [error, setError] = useState<string | null>(null);
+  const [confirmandoSalida, setConfirmandoSalida] = useState(false);
 
   const cambiar = (p: Partial<BorradorPerfil>) => {
     setError(null);
@@ -66,7 +68,7 @@ export default function Onboarding() {
   const atras = () => {
     setError(null);
     if (paso > 0) setPaso(paso - 1);
-    else setSesion(null);
+    else setConfirmandoSalida(true);
   };
 
   return (
@@ -98,8 +100,20 @@ export default function Onboarding() {
 
       <View style={{ gap: espacio.sm }}>
         <Boton texto={paso === PASOS.length - 1 ? 'Empezar' : 'Continuar'} onPress={siguiente} />
-        <Boton texto={paso === 0 ? 'Cerrar sesión' : 'Atrás'} variante="texto" onPress={atras} />
+        <Boton texto={paso === 0 ? 'Cancelar' : 'Atrás'} variante="texto" onPress={atras} />
       </View>
+
+      <DialogoConfirmacion
+        visible={confirmandoSalida}
+        titulo="¿Cerrar sesión?"
+        mensaje="Se perderán los datos que has introducido en este formulario."
+        textoConfirmar="Cerrar sesión"
+        onCancelar={() => setConfirmandoSalida(false)}
+        onConfirmar={() => {
+          setConfirmandoSalida(false);
+          setSesion(null);
+        }}
+      />
     </Pantalla>
   );
 }
