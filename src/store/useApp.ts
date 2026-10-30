@@ -50,6 +50,8 @@ interface EstadoApp {
 
   setPreferenciaTema(p: PreferenciaTema): void;
   setSesion(u: Usuario | null): void;
+  /** Cuenta eliminada: borra sus datos de este teléfono y cierra la sesión si era la activa. */
+  eliminarDatosDe(id: string): void;
   guardarPerfil(p: Perfil): void;
   /** `cantidad` en gramos o mililitros según el alimento; `medida` es el texto de la medida casera. */
   agregarRegistro(fecha: string, alimento: Alimento, cantidad: number, medida?: string): void;
@@ -88,6 +90,12 @@ export const useApp = create<EstadoApp>()(
             // Primer login real: los datos del login simulado anterior pasan a esta cuenta.
             const datos = esIdLocal(u.id) ? s.datos : adoptarDatosLocales(s.datos, u.id);
             return { sesion: u, datos: datos[u.id] ? datos : { ...datos, [u.id]: datosVacios() } };
+          }),
+
+        eliminarDatosDe: (id) =>
+          set((s) => {
+            const { [id]: _borrados, ...datos } = s.datos;
+            return { datos, sesion: s.sesion?.id === id ? null : s.sesion };
           }),
 
         guardarPerfil: (perfil) =>

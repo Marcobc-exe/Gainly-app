@@ -1,0 +1,63 @@
+{
+  "titulo": "Política de privacidad de Gainly",
+  "actualizada": "29 de octubre de 2026",
+  "contacto": "marco.developing@gmail.com",
+  "introduccion": "Gainly es una app para registrar las proteínas y los carbohidratos de tus comidas. Esta política explica qué datos usa, dónde se guardan y cómo puedes borrarlos.",
+  "secciones": [
+    {
+      "titulo": "Datos de tu cuenta",
+      "parrafos": [
+        "Para iniciar sesión usamos Supabase, un servicio de autenticación. Cuando entras con Apple, Google, Facebook o con un código por correo, Supabase guarda un identificador de usuario, tu correo electrónico, tu nombre si el proveedor lo comparte, el método con el que entraste y las fechas de inicio de sesión.",
+        "Si entras con Apple y eliges ocultar tu correo, solo recibimos la dirección privada que te asigna Apple."
+      ]
+    },
+    {
+      "titulo": "Datos que se quedan en tu teléfono",
+      "parrafos": [
+        "Tu perfil (sexo, edad, altura, peso, objetivo, entrenamiento y actividad), las comidas que registras, tus alimentos propios y tus ajustes se guardan solo en tu teléfono. No se envían a ningún servidor.",
+        "Las metas diarias se calculan en el propio teléfono a partir de esos datos."
+      ]
+    },
+    {
+      "titulo": "Para qué los usamos",
+      "parrafos": [
+        "Los datos de la cuenta sirven únicamente para identificarte y mantener tu sesión iniciada. No usamos tus datos para publicidad, no los vendemos, no te rastreamos entre apps y no usamos herramientas de analítica."
+      ]
+    },
+    {
+      "titulo": "Servicios de terceros",
+      "parrafos": [
+        "Supabase: guarda los datos de la cuenta descritos arriba.",
+        "Apple, Google y Facebook: solo intervienen mientras inicias sesión con ellos, según sus propias políticas de privacidad.",
+        "Gmail: envía el correo con tu código de inicio de sesión.",
+        "Expo: distribuye las actualizaciones de la app; al descargarlas, sus servidores pueden registrar datos técnicos como la dirección IP."
+      ]
+    },
+    {
+      "titulo": "Cuánto tiempo los guardamos y cómo borrarlos",
+      "parrafos": [
+        "Los datos de la cuenta se conservan mientras la cuenta exista. Puedes eliminarla en cualquier momento desde Perfil → Eliminar cuenta: se borra tu cuenta de Supabase y tus datos de este teléfono.",
+        "Si desinstalas la app, los datos guardados en el teléfono se borran. También puedes pedirnos que eliminemos tu cuenta escribiendo al correo de contacto.",
+        "Si entraste con Apple, además puedes quitar el acceso de Gainly en Ajustes → tu nombre → Iniciar sesión con Apple."
+      ]
+    },
+    {
+      "titulo": "Seguridad",
+      "parrafos": [
+        "Las comunicaciones con Supabase van cifradas (HTTPS) y la sesión se guarda en tu teléfono."
+      ]
+    },
+    {
+      "titulo": "Menores de edad",
+      "parrafos": [
+        "Gainly no está dirigida a menores de 13 años y no recogemos a sabiendas datos de menores de esa edad."
+      ]
+    },
+    {
+      "titulo": "Cambios en esta política",
+      "parrafos": [
+        "Si cambiamos esta política, actualizaremos la fecha de esta página y, si el cambio es importante, te avisaremos en la app."
+      ]
+    }
+  ]
+}

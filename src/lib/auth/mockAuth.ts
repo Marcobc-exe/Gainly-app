@@ -18,6 +18,7 @@ export const mockAuth: AuthService = {
     return { id: 'local-correo', proveedor: 'correo', nombre: email.split('@')[0], email };
   },
   async cerrarSesion() {},
+  async eliminarCuenta() {},
   async haySesion() {
     return true;
   },

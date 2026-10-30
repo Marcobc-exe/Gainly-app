@@ -108,7 +108,8 @@ export function Boton({
           <Text
             style={[
               styles.botonTexto_,
-              { color: colorTexto },
+              // Si el texto ocupa dos líneas, cada línea queda centrada en el botón.
+              { color: colorTexto, textAlign: 'center', flexShrink: 1 },
             ]}
           >
             {texto}

@@ -39,9 +39,21 @@ Real sign-in with **Apple** (native, iOS only), **Google** and **Facebook** (sys
 - The first real sign-in adopts the data from the old simulated login (`local-*`), see `adoptarDatosLocales` in `src/store/useApp.ts`.
 - Testers: add them as Google *Test users* and as Meta *Testers* while those apps are in testing/development mode. Email and Apple work for anyone.
 
+## App Store readiness
+
+- **Delete account** (required by App Review 5.1.1): Profile → Cuenta → Eliminar cuenta calls the SQL function in `supabase/eliminar_cuenta.sql` (run it once in Supabase → SQL Editor) and then removes the account's data from the phone (`eliminarDatosDe` in the store).
+- **Privacy policy**: the text lives in `src/data/privacidad.json`; the app shows it in `src/app/privacidad.tsx` and `npm run privacidad` generates `legal/privacidad.html` to host anywhere static (the URL goes in App Store Connect and Meta).
+- **Build config**: `eas.json` production profile (channel `produccion`, remote build numbers with `autoIncrement`), `ios.config.usesNonExemptEncryption: false` in `app.json`.
+- Still needed when publishing: an Apple Developer account, a public URL for the privacy page, revoking Sign in with Apple tokens on account deletion (needs the Apple key from that account), Google consent screen "In production" and Meta app in Live mode.
+
+```bash
+npx eas-cli@latest build --platform ios --profile production
+npx eas-cli@latest submit --platform ios
+```
+
 ## Publish to my phone (EAS Update + Expo Go)
 
-The app is published to Expo's servers (project `@marco.exe/gainly`, branch `produccion`), so it opens in Expo Go without the PC running.
+The app is published to Expo's servers (project `@gainly-team/gainly`, branch `produccion`), so it opens in Expo Go without the PC running.
 
 **Open it on the iPhone:** sign in to Expo Go with the same Expo account → **Projects → gainly → produccion** (or scan the QR under *Preview* in the update page on expo.dev). After the first time it stays in *Recently opened*.
 

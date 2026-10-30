@@ -71,6 +71,7 @@ function Contenido() {
             <Stack.Screen name="alimento-nuevo" options={{ presentation: 'modal' }} />
             <Stack.Screen name="editar-alimento" options={{ presentation: 'modal' }} />
             <Stack.Screen name="editar-perfil" />
+            <Stack.Screen name="privacidad" options={{ presentation: 'modal' }} />
           </Stack.Protected>
         </Stack>
       </SafeAreaProvider>

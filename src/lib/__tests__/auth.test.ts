@@ -1,4 +1,4 @@
-import { CanceladoError, mensajeErrorAuth } from '@/lib/auth/AuthService';
+import { CanceladoError, mensajeErrorAuth, mensajeErrorEliminarCuenta } from '@/lib/auth/AuthService';
 import { esIdLocal, usuarioDesdeSupabase } from '@/lib/auth/usuario';
 import { adoptarDatosLocales, useApp } from '@/store/useApp';
 
@@ -86,7 +86,31 @@ describe('setSesion con cuenta real', () => {
   });
 });
 
+describe('eliminarDatosDe', () => {
+  it('borra los datos de la cuenta eliminada y cierra su sesión, sin tocar otras cuentas', () => {
+    useApp.setState({ sesion: null, datos: {} });
+    const { setSesion } = useApp.getState();
+    setSesion({ id: 'otra', proveedor: 'apple', nombre: 'Otra' });
+    setSesion({ id: 'uuid-borrar', proveedor: 'correo', nombre: 'Ana', email: 'ana@mail.com' });
+    useApp.getState().eliminarDatosDe('uuid-borrar');
+    const { sesion, datos } = useApp.getState();
+    expect(sesion).toBeNull();
+    expect(datos['uuid-borrar']).toBeUndefined();
+    expect(datos.otra).toBeDefined();
+  });
+});
+
 describe('mensajes de error', () => {
+  it('eliminar la cuenta tiene sus propios mensajes', () => {
+    expect(
+      mensajeErrorEliminarCuenta(
+        new Error('Could not find the function public.eliminar_cuenta without parameters in the schema cache'),
+      ),
+    ).toMatch(/aún no está activado/);
+    expect(mensajeErrorEliminarCuenta(new Error('JWT expired'))).toMatch(/No se pudo eliminar la cuenta/);
+    expect(mensajeErrorEliminarCuenta(new Error('Network request failed'))).toMatch(/conexión/);
+  });
+
   it('traduce los errores habituales', () => {
     expect(mensajeErrorAuth(new Error('Token has expired or is invalid'))).toMatch(/código/);
     expect(mensajeErrorAuth(new Error('email rate limit exceeded'))).toMatch(/demasiados/);

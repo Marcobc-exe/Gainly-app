@@ -12,7 +12,7 @@ import { DialogoConfirmacion } from '@/components/DialogoConfirmacion';
 import { IconoFlecha } from '@/components/Iconos';
 import { Boton, CampoNumero, Etiqueta, Opciones, Pantalla, Separador, Tarjeta } from '@/components/ui';
 import { unidadDe } from '@/data/medidas';
-import { NOMBRE_PROVEEDOR } from '@/lib/auth/AuthService';
+import { mensajeErrorEliminarCuenta, NOMBRE_PROVEEDOR } from '@/lib/auth/AuthService';
 import { auth } from '@/lib/auth/mockAuth';
 import { UMBRALES_POR_DEFECTO, validarUmbrales } from '@/lib/estadoDia';
 import {
@@ -111,7 +111,70 @@ export default function PerfilPantalla() {
       />
 
       <AjustesGenerales />
+      <Cuenta />
     </Pantalla>
+  );
+}
+
+/** Privacidad y eliminación de la cuenta (la App Store exige poder borrarla desde la app). */
+function Cuenta() {
+  const { colors, tipografia } = useTema();
+  const styles = useEstilos(crearEstilos);
+  const sesion = useApp((s) => s.sesion);
+  const eliminarDatosDe = useApp((s) => s.eliminarDatosDe);
+  const [confirmando, setConfirmando] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const eliminar = async () => {
+    if (!sesion) return;
+    setConfirmando(false);
+    setEliminando(true);
+    setError(null);
+    try {
+      await auth.eliminarCuenta();
+      eliminarDatosDe(sesion.id);
+    } catch (e) {
+      setError(mensajeErrorEliminarCuenta(e));
+      setEliminando(false);
+    }
+  };
+
+  return (
+    <View style={{ gap: espacio.sm }}>
+      <Text style={tipografia.subtitulo}>Cuenta</Text>
+      <Tarjeta style={{ gap: espacio.md }}>
+        <Pressable
+          onPress={() => router.push('/privacidad')}
+          style={({ pressed }) => [styles.ajuste, pressed && { opacity: 0.6 }]}
+          accessibilityRole="button"
+        >
+          <Text style={[tipografia.cuerpo, { flex: 1, fontWeight: '600' }]}>Política de privacidad</Text>
+          <IconoFlecha dir="der" color={colors.textoTenue} tamano={18} />
+        </Pressable>
+        <Separador />
+        <Pressable
+          onPress={() => setConfirmando(true)}
+          disabled={eliminando}
+          style={({ pressed }) => [pressed && { opacity: 0.6 }]}
+          accessibilityRole="button"
+        >
+          <Text style={[tipografia.cuerpo, { fontWeight: '600', color: colors.peligro }]}>
+            {eliminando ? 'Eliminando cuenta…' : 'Eliminar cuenta'}
+          </Text>
+          <Text style={tipografia.secundario}>Borra tu cuenta y todos tus datos de este teléfono.</Text>
+        </Pressable>
+        {error ? <Text style={{ color: colors.peligro }}>{error}</Text> : null}
+      </Tarjeta>
+      <DialogoConfirmacion
+        visible={confirmando}
+        titulo="¿Eliminar tu cuenta?"
+        mensaje="Se borrará tu cuenta de Gainly y, de este teléfono, tu perfil, tus comidas y tus alimentos propios. No se puede deshacer."
+        textoConfirmar="Eliminar cuenta"
+        onCancelar={() => setConfirmando(false)}
+        onConfirmar={eliminar}
+      />
+    </View>
   );
 }
 

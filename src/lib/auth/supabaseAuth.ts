@@ -101,6 +101,14 @@ export function crearSupabaseAuth(supabase: SupabaseClient): AuthService {
       await supabase.auth.signOut().catch(() => {});
     },
 
+    async eliminarCuenta() {
+      // Función SQL `eliminar_cuenta` (supabase/eliminar_cuenta.sql): borra solo al usuario con sesión.
+      const { error } = await supabase.rpc('eliminar_cuenta');
+      if (error) throw error;
+      // El usuario ya no existe en el servidor: basta con olvidar la sesión en el teléfono.
+      await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+    },
+
     async haySesion() {
       // Un error (p. ej. sin red al refrescar el token) no cuenta como sesión cerrada.
       const { data, error } = await supabase.auth.getSession();

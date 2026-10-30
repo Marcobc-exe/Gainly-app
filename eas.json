@@ -5,7 +5,8 @@
   },
   "build": {
     "production": {
-      "channel": "produccion"
+      "channel": "produccion",
+      "autoIncrement": true
     }
   },
   "submit": {

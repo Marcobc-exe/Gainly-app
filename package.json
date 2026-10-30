@@ -50,7 +50,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "iconos": "node scripts/generar-iconos.mjs",
-    "publicar": "node scripts/publicar.mjs"
+    "publicar": "node scripts/publicar.mjs",
+    "privacidad": "node scripts/generar-privacidad.mjs"
   },
   "private": true,
   "jest": {
